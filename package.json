@@ -22,10 +22,12 @@
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.0",
+    "class-validator": "^0.14.0",
     "express-session": "^1.17.3",
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
