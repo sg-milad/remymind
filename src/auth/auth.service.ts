@@ -12,9 +12,9 @@ export class AuthService {
 
   async validateUser(details: UserDetails) {
     const user = await this.userRepository.findOneBy({ email: details.email });
-    
+
     if (user) return user;
-    
+
     const newUser = this.userRepository.create(details);
     return this.userRepository.save(newUser);
   }
