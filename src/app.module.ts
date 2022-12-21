@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { User } from './typeorm/entities/User';
+import { RemymindModule } from './remymind/remymind.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule,
+    ConfigModule.forRoot({
+      envFilePath:".env",
+      isGlobal:true,
+      load:[configuration]
+    }),
     AuthModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -16,12 +22,13 @@ import { User } from './typeorm/entities/User';
       username: 'postgres',
       password: '1234',
       database: 'google_oauth2_app',
-      entities: [User],
       synchronize: true,
+      autoLoadEntities:true
     }),
     PassportModule.register({ session: true }),
+    RemymindModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
