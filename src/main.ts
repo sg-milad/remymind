@@ -4,9 +4,12 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule,{
+    logger:['error','warn','log']
+  });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.use(
@@ -20,7 +23,7 @@ async function bootstrap() {
       },
     }),
   );
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({transform:true}));
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(3001);

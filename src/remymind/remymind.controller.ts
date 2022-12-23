@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Req } from '@nestjs/common';
+import { CurrentUser } from 'src/common/decorator/current-user.decorator';
 import { CreatereMinder } from './dto/create-reminder.dto';
 import { RemymindService } from './remymind.service';
 
@@ -8,32 +8,27 @@ export class RemymindController {
   constructor(private readonly remyMindService: RemymindService) {}
 
   @Post()
-  createreminder(@Body() createreMinder: CreatereMinder , @Req() request:Request ) {
-   if(request.user === undefined) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    return this.remyMindService.createreMinder(createreMinder,request.user);
+  createreminder(@CurrentUser() user, @Body() createreMinder: CreatereMinder ) {
+    return this.remyMindService.createreMinder(user,createreMinder);
   }
 
   @Get()
-  getAllReminder(@Req() request:Request ){
-    if(request.user === undefined) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    return this.remyMindService.getAllReminder(request.user)
+  getAllReminder(@CurrentUser() user ){
+    return this.remyMindService.getAllReminder(user)
   }
 
   @Get(":id")
-  getreminder(@Req() request:Request, @Param("id") id ){
-    if(request.user === undefined) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    return this.remyMindService.getReminder(request.user,id)
+  getreminder(@CurrentUser() user, @Param("id",ParseIntPipe) id ){
+    return this.remyMindService.getReminder(user,id)
   }
   
   @Patch(":id")
-  updateReminder(@Req() request:Request, @Param("id") id ,@Body() createreMinder:CreatereMinder){
-    if(request.user === undefined) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    return this.remyMindService.updateReminder(request.user,id,createreMinder)
+  updateReminder(@CurrentUser() user, @Param("id",ParseIntPipe) id ,@Body() createreMinder:CreatereMinder){
+    return this.remyMindService.updateReminder(user,id,createreMinder)
   }
 
   @Delete(":id")
-  deleteReminder(@Req() request:Request, @Param("id") id ){
-    if(request.user === undefined) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    return this.remyMindService.deleteReminder(request.user,id)
+  deleteReminder(@CurrentUser() user, @Param("id",ParseIntPipe) id  ){
+    return this.remyMindService.deleteReminder(user,id)
   }  
 }
