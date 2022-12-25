@@ -1,0 +1,8 @@
+learn about session 
+learn about error handeling in nest 
+learn how to send notification and remind user
+learn loging in nest
+refactor 
+//save session in redis
+// validate qurey params 
+// daecretor for get user
