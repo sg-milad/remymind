@@ -4,16 +4,7 @@ import {ReMyinder} from 'src/typeorm/entities/Remymind';
 import {Repository} from 'typeorm';
 import {CreatereMinder} from './dto/create-reminder.dto';
 
-/*
-learn about error handeling in nest 
-learn about session 
-save session in redis
-refactor 
-learn how to send notification and remind user
-learn loging in nest
-// validate qurey params 
-// daecretor for get user
-*/
+
 @Injectable()
 export class RemymindService {
     constructor(@InjectRepository(ReMyinder)private readonly remymindRepository : Repository < ReMyinder >,
