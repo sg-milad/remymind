@@ -4,7 +4,14 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
+import {createClient} from "redis"
+import * as connectRedis from 'connect-redis';
+
+let RedisStore = connectRedis(session);
+let redisClient = createClient({
+  url:"redis://default:redispw@localhost:55000"
+})
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
@@ -12,6 +19,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
+
   app.use(
     session({
       name: 'remymind',
@@ -19,10 +27,12 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        maxAge: 900000000000000,
+        maxAge: 60000,
       },
+      store: new RedisStore({ client: redisClient }),
     }),
   );
+  
   app.useGlobalPipes(new ValidationPipe({transform:true}));
   app.use(passport.initialize());
   app.use(passport.session());

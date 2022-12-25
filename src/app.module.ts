@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import {   CacheModule, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { RemymindModule } from './remymind/remymind.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule  } from '@nestjs/config';
 import configuration from './config/configuration';
+import { redisStore } from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -27,6 +28,10 @@ import configuration from './config/configuration';
     }),
     PassportModule.register({ session: true }),
     RemymindModule,
+    CacheModule.register({
+      store: redisStore,
+      isGlobal:true,
+    }),
   ],
   controllers: [],
   providers: [],
