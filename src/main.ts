@@ -6,15 +6,16 @@ import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import {createClient} from "redis"
 import * as connectRedis from 'connect-redis';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 let RedisStore = connectRedis(session);
 let redisClient = createClient({
-  url:"redis://default:redispw@localhost:55000"
+  url:"redis://default:redispw@localhost:55002"
 })
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{
+  const app = await NestFactory.create<NestExpressApplication>(AppModule,{
     logger:['error','warn','log']
   });
   app.setGlobalPrefix('api');
@@ -32,7 +33,6 @@ async function bootstrap() {
       store: new RedisStore({ client: redisClient }),
     }),
   );
-  
   app.useGlobalPipes(new ValidationPipe({transform:true}));
   app.use(passport.initialize());
   app.use(passport.session());
