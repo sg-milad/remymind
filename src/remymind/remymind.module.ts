@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReMyinder } from 'src/typeorm/entities/Remymind';
 import { RemymindController } from './remymind.controller';

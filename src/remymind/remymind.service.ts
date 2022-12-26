@@ -7,8 +7,10 @@ import {CreatereMinder} from './dto/create-reminder.dto';
 
 @Injectable()
 export class RemymindService {
-    constructor(@InjectRepository(ReMyinder)private readonly remymindRepository : Repository < ReMyinder >,
-    ) {}
+    constructor(
+        @InjectRepository(ReMyinder) private readonly remymindRepository : Repository < ReMyinder >,
+        ) {}
+        private readonly logger = new Logger(RemymindService.name)
 
     async createreMinder(userId,createreMinder : CreatereMinder ) {
         try {
@@ -28,7 +30,7 @@ export class RemymindService {
             }
             return {status: HttpStatus.CREATED, data: saveNewRemind, success: true};
         } catch (error) {
-            console.log("looog", error);
+           this.logger.error(error)
             throw new HttpException("INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -43,7 +45,7 @@ export class RemymindService {
             return getAllReminder
 
         } catch (error) {
-            console.log(error);
+            this.logger.error(error)
             throw new HttpException("INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -57,11 +59,11 @@ export class RemymindService {
                 }
             })
             if (! getReminder) {
-                return {status: HttpStatus.BAD_REQUEST, data: "not fund ", seccess: false}
+                return {status: HttpStatus.BAD_REQUEST, data: "not found ", seccess: false}
             }
             return getReminder
         } catch (error) {
-            console.log(error);
+            this.logger.error(error)
             throw new HttpException("INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -78,7 +80,7 @@ export class RemymindService {
             }
             return {status: HttpStatus.CREATED, data: "updated sccussfuly", seccess: true}
         } catch (error) {
-          console.log(error);
+            this.logger.error(error)
           throw new HttpException("INTERNAL_SERVER_ERROR",HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -86,12 +88,12 @@ export class RemymindService {
     async deleteReminder(userId, idReminder) {
         try {
             const deleteReminder = await this.remymindRepository.delete({user: userId.id, id: idReminder})
-            if (deleteReminder.affected === 0) {
+            if (deleteReminder.affected === 0 || !deleteReminder) {
                 return {status: HttpStatus.BAD_REQUEST, data: "dont fund", seccess: false}
             }
             return {status: HttpStatus.CREATED, data: "delete sccessfuly", seccess: true}
         } catch (error) {
-          console.log(error);
+            this.logger.error(error)
           throw new HttpException("INTERNAL_SERVER_ERROR",HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }

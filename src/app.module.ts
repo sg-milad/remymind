@@ -1,4 +1,4 @@
-import {   CacheModule, Module } from '@nestjs/common';
+import {   CacheModule, Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -6,6 +6,7 @@ import { RemymindModule } from './remymind/remymind.module';
 import { ConfigModule  } from '@nestjs/config';
 import configuration from './config/configuration';
 import { redisStore } from 'cache-manager-redis-store';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -36,4 +37,8 @@ import { redisStore } from 'cache-manager-redis-store';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
