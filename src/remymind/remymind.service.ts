@@ -12,16 +12,15 @@ export class RemymindService {
         ) {}
         private readonly logger = new Logger(RemymindService.name)
 
-    async createreMinder(userId,createreMinder : CreatereMinder ) {
+    async createReminder(userId,createreMinder : CreatereMinder ,file) {
         try {
-
             const newMinder = this.remymindRepository.create({
                 description: createreMinder.description,
                 favorite: createreMinder.favorite,
-                img: createreMinder.img,
+                img: file.img ? file.img[0].path : null,
                 remindme: createreMinder.remindme,
                 title: createreMinder.title,
-                voice: createreMinder.voice,
+                voice: file.voice ? file.voice[0].path : null,
                 user: userId.id
             });
             const saveNewRemind = await this.remymindRepository.save(newMinder);

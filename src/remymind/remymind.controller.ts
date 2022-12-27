@@ -1,34 +1,44 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Req } from '@nestjs/common';
-import { CurrentUser } from 'src/common/decorator/current-user.decorator';
-import { CreatereMinder } from './dto/create-reminder.dto';
-import { RemymindService } from './remymind.service';
+import {
+    Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFiles, UseInterceptors
+}
+from '@nestjs/common';
+import {
+    FileFieldsInterceptor, 
+}
+from '@nestjs/platform-express';
+import {
+    CurrentUser
+}
+from 'src/common/decorator/current-user.decorator';
+import {
+    CreatereMinder
+}
+from './dto/create-reminder.dto';
+import {
+    RemymindService
+}
+from './remymind.service';
 
-@Controller('remymind')
-export class RemymindController {
-  constructor(private readonly remyMindService: RemymindService) {}
+@Controller('remymind') export class RemymindController {
+    constructor(private readonly remyMindService: RemymindService) {}
 
-  @Post()
-  createreminder(@CurrentUser() user, @Body() createreMinder: CreatereMinder ) {
-    return this.remyMindService.createreMinder(user,createreMinder);
-  }
+    @Post() @UseInterceptors(FileFieldsInterceptor([{name:"img",maxCount:1}, {name:"voice",maxCount:1} ])) createreminder(@CurrentUser() user, @Body() createreMinder: CreatereMinder, @UploadedFiles() file: {img?:Express.Multer.File[], voice?:Express.Multer.File[]} ) {
+      return this.remyMindService.createReminder(user,createreMinder,file);
+    }
 
-  @Get()
-  getAllReminder(@CurrentUser() user ){
-    return this.remyMindService.getAllReminder(user)
-  }
+    @Get() getAllReminder(@CurrentUser() user) {
+        return this.remyMindService.getAllReminder(user)
+    }
 
-  @Get(":id")
-  getreminder(@CurrentUser() user, @Param("id",ParseIntPipe) id ){
-    return this.remyMindService.getReminder(user,id)
-  }
-  
-  @Patch(":id")
-  updateReminder(@CurrentUser() user, @Param("id",ParseIntPipe) id ,@Body() createreMinder:CreatereMinder){
-    return this.remyMindService.updateReminder(user,id,createreMinder)
-  }
+    @Get(":id") getreminder(@CurrentUser() user, @Param("id", ParseIntPipe) id) {
+        return this.remyMindService.getReminder(user,id)
+    }
 
-  @Delete(":id")
-  deleteReminder(@CurrentUser() user, @Param("id",ParseIntPipe) id  ){
-    return this.remyMindService.deleteReminder(user,id)
-  }  
+    @Patch(":id") updateReminder(@CurrentUser() user, @Param("id", ParseIntPipe) id , @Body() createreMinder:CreatereMinder) {
+        return this.remyMindService.updateReminder(user,id,createreMinder)
+    }
+
+    @Delete(":id") deleteReminder(@CurrentUser() user, @Param("id", ParseIntPipe) id) {
+        return this.remyMindService.deleteReminder(user,id)
+    }
 }

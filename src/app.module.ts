@@ -7,6 +7,8 @@ import { ConfigModule  } from '@nestjs/config';
 import configuration from './config/configuration';
 import { redisStore } from 'cache-manager-redis-store';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -32,6 +34,11 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     CacheModule.register({
       store: redisStore,
       isGlobal:true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'upload'),
+      serveRoot:"/upload",
+      // renderPath:"/api"
     }),
   ],
   controllers: [],
