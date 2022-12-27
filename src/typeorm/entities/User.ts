@@ -1,17 +1,17 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ReMyinder } from './Remymind';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { ReMyinder } from "./Remymind"
 
-@Entity({ name: 'users' })
+@Entity({ name: "users" })
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column()
-  email: string;
+  email: string
 
   @Column()
-  displayName: string; 
+  displayName: string
 
-  @OneToMany(()=>ReMyinder,(reMyinder)=>reMyinder.user)
-  userId:ReMyinder[]
+  @OneToMany(() => ReMyinder, (reMyinder) => reMyinder.user)
+  userId: ReMyinder[]
 }

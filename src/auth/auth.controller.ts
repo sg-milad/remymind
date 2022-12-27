@@ -1,29 +1,28 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { GoogleAuthGuard } from './utils/Guards';
+import { Controller, Get, Req, UseGuards } from "@nestjs/common"
+import { Request } from "express"
+import { GoogleAuthGuard } from "./utils/Guards"
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-  @Get('google/login')
+  @Get("google/login")
   @UseGuards(GoogleAuthGuard)
   handleLogin() {
-    return { msg: 'Google Authentication' };
+    return { msg: "Google Authentication" }
   }
   // api/auth/google/redirect
-  @Get('google/redirect')
+  @Get("google/redirect")
   @UseGuards(GoogleAuthGuard)
   handleRedirect() {
-    
-    return { msg: 'OK' };
+    return { msg: "OK" }
   }
 
-  @Get('status')
+  @Get("status")
   user(@Req() request: Request) {
-    console.log(request.user);
+    console.log(request.user)
     if (request.user) {
-      return { msg: 'Authenticated' };
+      return { msg: "Authenticated" }
     } else {
-      return { msg: 'Not Authenticated' };
+      return { msg: "Not Authenticated" }
     }
   }
 }

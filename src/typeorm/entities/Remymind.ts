@@ -1,37 +1,42 @@
-/* eslint-disable prettier/prettier */
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './User';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm"
+import { User } from "./User"
 
-@Entity({ name: 'remymind' })
+@Entity({ name: "remymind" })
 export class ReMyinder {
   @PrimaryGeneratedColumn()
-  id:string
-  
-  @ManyToOne(() => User,(user)=>user.id)
-  user: User;
+  id: string
 
-  @Column({  type: 'text' })
-  title: string;
+  @ManyToOne(() => User, (user) => user.id)
+  user: User
 
-  @Column({  type: 'text' })
-  description: string;
+  @Column({ type: "text" })
+  title: string
 
-  @Column({ default: null })
-  img: string;
+  @Column({ type: "text" })
+  description: string
 
   @Column({ default: null })
-  voice: string;
+  img: string
+
+  @Column({ default: null })
+  voice: string
 
   @Column({ default: false })
-  favorite: boolean;
+  favorite: boolean
 
-  @Column({default:1})
-  remindme: number;
+  @Column({ default: 1 })
+  remindme: number
 
   @CreateDateColumn()
-  createDate:string;
+  createDate: string
 
   @UpdateDateColumn()
-  updateDate:string;
-
+  updateDate: string
 }
