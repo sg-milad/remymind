@@ -32,7 +32,6 @@ export class RemymindController {
     @UploadedFiles()
     file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] }
   ) {
-    console.log(createreMinder)
     return this.remyMindService.createReminder(user, createreMinder, file)
   }
 
@@ -58,7 +57,6 @@ export class RemymindController {
     @UploadedFiles()
     file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] }
   ) {
-    console.log(createreMinder)
     return this.remyMindService.updateReminder(user, id, createreMinder, file)
   }
 

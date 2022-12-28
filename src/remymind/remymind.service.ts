@@ -14,6 +14,7 @@ export class RemymindService {
 
   async createReminder(userId, createreMinder: CreatereMinder, file) {
     try {
+      
       const newMinder = this.remymindRepository.create({
         description: createreMinder.description,
         favorite: createreMinder.favorite,
@@ -43,18 +44,22 @@ export class RemymindService {
 
   async getAllReminder(userId) {
     try {
-      const getAllReminder = await this.remymindRepository.findBy({
-        user: userId.id,
+      // const getAllReminder = await this.remymindRepository.findBy({user:{id:userId.id}})
+      
+      const getAllReminder = await this.remymindRepository.find({
+        where:{
+          user:{id:userId.id}
+        }
       })
-
-      if (!getAllReminder) {
+      
+      if (getAllReminder.length === 0) {
         return {
           status: HttpStatus.NO_CONTENT,
           data: "no content",
           success: false,
         }
       }
-      return getAllReminder
+      return {status:HttpStatus.OK,data:getAllReminder,success:true}
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -66,20 +71,20 @@ export class RemymindService {
 
   async getReminder(userId, idReminder) {
     try {
-      const getReminder = await this.remymindRepository.findOne({
+      const getReminder = await this.remymindRepository.find({
         where: {
-          user: userId.id,
+          user: {id:userId.id},
           id: idReminder,
         },
       })
-      if (!getReminder) {
+      if ( getReminder.length === 0 ) {
         return {
-          status: HttpStatus.BAD_REQUEST,
+          status: HttpStatus.NO_CONTENT,
           data: "not found ",
           seccess: false,
         }
       }
-      return getReminder
+      return {status:HttpStatus.ACCEPTED,data:getReminder,success:true}
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -96,24 +101,24 @@ export class RemymindService {
     file
   ) {
     try {
-      const updateReminder: any = await this.remymindRepository.update(
+      const updateReminder = await this.remymindRepository.update(
         {
-          user: userId.id,
+          user: {id:userId.id},
           id: idReminder,
         },
         {
           description: createreMinder.description,
           favorite: createreMinder.favorite,
-          img: file ? file.img[0].path : null,
+          img: file.img ? file.img[0].path : null,
           remindme: createreMinder.remindme,
           title: createreMinder.title,
           voice: file.voice ? file.voice[0].path : null,
         }
       )
 
-      if (updateReminder.affected === 0 || !updateReminder) {
+      if (updateReminder.affected === 0) {
         return {
-          status: HttpStatus.BAD_REQUEST,
+          status: HttpStatus.NOT_FOUND,
           data: "error",
           seccess: false,
         }
@@ -135,13 +140,13 @@ export class RemymindService {
   async deleteReminder(userId, idReminder) {
     try {
       const deleteReminder = await this.remymindRepository.delete({
-        user: userId.id,
+        user: {id:userId.id},
         id: idReminder,
       })
-      if (deleteReminder.affected === 0 || !deleteReminder) {
+      if (deleteReminder.affected === 0 ) {
         return {
-          status: HttpStatus.BAD_REQUEST,
-          data: "dont fund",
+          status: HttpStatus.NOT_FOUND,
+          data: "not found",
           seccess: false,
         }
       }
