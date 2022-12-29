@@ -34,6 +34,9 @@ export class ReMyinder {
   @Column({ default: 1 })
   remindme: number
 
+  // @Column()
+  // reminded
+
   @CreateDateColumn()
   createDate: string
 
