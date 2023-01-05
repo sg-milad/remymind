@@ -14,7 +14,6 @@ export class RemymindService {
 
   async createReminder(userId, createreMinder: CreatereMinder, file) {
     try {
-      
       const newMinder = this.remymindRepository.create({
         description: createreMinder.description,
         favorite: createreMinder.favorite,
@@ -45,13 +44,13 @@ export class RemymindService {
   async getAllReminder(userId) {
     try {
       // const getAllReminder = await this.remymindRepository.findBy({user:{id:userId.id}})
-      
+
       const getAllReminder = await this.remymindRepository.find({
-        where:{
-          user:{id:userId.id}
-        }
+        where: {
+          user: { id: userId.id },
+        },
       })
-      
+
       if (getAllReminder.length === 0) {
         return {
           status: HttpStatus.NO_CONTENT,
@@ -59,7 +58,7 @@ export class RemymindService {
           success: false,
         }
       }
-      return {status:HttpStatus.OK,data:getAllReminder,success:true}
+      return { status: HttpStatus.OK, data: getAllReminder, success: true }
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -73,18 +72,18 @@ export class RemymindService {
     try {
       const getReminder = await this.remymindRepository.find({
         where: {
-          user: {id:userId.id},
+          user: { id: userId.id },
           id: idReminder,
         },
       })
-      if ( getReminder.length === 0 ) {
+      if (getReminder.length === 0) {
         return {
           status: HttpStatus.NO_CONTENT,
           data: "not found ",
           seccess: false,
         }
       }
-      return {status:HttpStatus.ACCEPTED,data:getReminder,success:true}
+      return { status: HttpStatus.ACCEPTED, data: getReminder, success: true }
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -103,7 +102,7 @@ export class RemymindService {
     try {
       const updateReminder = await this.remymindRepository.update(
         {
-          user: {id:userId.id},
+          user: { id: userId.id },
           id: idReminder,
         },
         {
@@ -140,10 +139,10 @@ export class RemymindService {
   async deleteReminder(userId, idReminder) {
     try {
       const deleteReminder = await this.remymindRepository.delete({
-        user: {id:userId.id},
+        user: { id: userId.id },
         id: idReminder,
       })
-      if (deleteReminder.affected === 0 ) {
+      if (deleteReminder.affected === 0) {
         return {
           status: HttpStatus.NOT_FOUND,
           data: "not found",
