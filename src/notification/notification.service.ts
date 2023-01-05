@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
+import { Inject, Injectable } from "@nestjs/common"
+import { ConfigType } from "@nestjs/config"
+import * as firebase from "firebase-admin"
+import firbaseConfig from "src/config/firbase.config"
 
 @Injectable()
 export class NotificationsService {
-  constructor() {
-    // For simplicity these credentials are just stored in the environment
-    // However these should be stored in a key management system
-    const firebaseCredentials = JSON.parse(process.env.FIREBASE_CER);
+  constructor(
+    @Inject(firbaseConfig.KEY)
+    private readonly fbConfig: ConfigType<typeof firbaseConfig>
+  ) {
+    // console.log(fbConfig);
+
     firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-    //   databaseURL: process.env.FIREBASE_DATABASE_URL,
-    });
+      credential: firebase.credential.cert(fbConfig),
+    })
   }
 }

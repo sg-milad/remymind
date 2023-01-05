@@ -14,14 +14,17 @@ import { redisStore } from "cache-manager-redis-store"
 import { LoggerMiddleware } from "./middleware/logger.middleware"
 import { ServeStaticModule } from "@nestjs/serve-static"
 import { join } from "path"
+import { NotificationsService } from "./notification/notification.service"
+import firbaseConfig from "./config/firbase.config"
 
 @Module({
   imports: [
+    // NotificationsService,
     ConfigModule,
     ConfigModule.forRoot({
       envFilePath: ".env",
       isGlobal: true,
-      load: [configuration],
+      load: [configuration, firbaseConfig],
     }),
     AuthModule,
     TypeOrmModule.forRoot({
@@ -47,7 +50,7 @@ import { join } from "path"
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [NotificationsService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

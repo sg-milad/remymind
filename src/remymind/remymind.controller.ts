@@ -10,14 +10,19 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common"
+import * as admin from "firebase-admin"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
 import { CurrentUser } from "src/common/decorator/current-user.decorator"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 import { RemymindService } from "./remymind.service"
+import { NotificationsService } from "src/notification/notification.service"
 
 @Controller("remymind")
 export class RemymindController {
-  constructor(private readonly remyMindService: RemymindService) {}
+  constructor(
+    private readonly remyMindService: RemymindService,
+    private readonly notify: NotificationsService
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -65,5 +70,9 @@ export class RemymindController {
     @Param("id", ParseIntPipe) id
   ) {
     return this.remyMindService.deleteReminder(user, id)
+  }
+  @Post("/notif")
+  async sendnotif(fcmtoken, @Body() payload) {
+    // await this.notify
   }
 }
