@@ -14,7 +14,6 @@ import { redisStore } from "cache-manager-redis-store"
 import { LoggerMiddleware } from "./middleware/logger.middleware"
 import { ServeStaticModule } from "@nestjs/serve-static"
 import { join } from "path"
-import { NotificationsService } from "./notification/notification.service"
 import firbaseConfig from "./config/firbase.config"
 
 @Module({
@@ -50,7 +49,9 @@ import firbaseConfig from "./config/firbase.config"
     }),
   ],
   controllers: [],
-  providers: [NotificationsService],
+  providers: [
+    // NotificationsService
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

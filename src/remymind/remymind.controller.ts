@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   ParseIntPipe,
   Patch,
@@ -71,8 +72,17 @@ export class RemymindController {
   ) {
     return this.remyMindService.deleteReminder(user, id)
   }
+
   @Post("/notif")
-  async sendnotif(fcmtoken, @Body() payload) {
-    // await this.notify
+  async sendnotif(@Headers("Authorization") fcmtoken, @Body() payload ,@CurrentUser() user) {
+    console.log(fcmtoken);
+    console.log(payload);
+    try {
+      return await this.notify.sendNotif(fcmtoken,payload)
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
 }

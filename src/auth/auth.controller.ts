@@ -1,5 +1,6 @@
 import { Controller, Get, Req, UseGuards } from "@nestjs/common"
 import { Request } from "express"
+import { CurrentUser } from "src/common/decorator/current-user.decorator"
 import { GoogleAuthGuard } from "./utils/Guards"
 
 @Controller("auth")
@@ -17,8 +18,9 @@ export class AuthController {
   }
 
   @Get("status")
-  user(@Req() request: Request) {
-    console.log(request.user)
+  user(@Req() request: Request ,@CurrentUser() user ) {
+    console.log(user);
+    
     if (request.user) {
       return { msg: "Authenticated" }
     } else {
