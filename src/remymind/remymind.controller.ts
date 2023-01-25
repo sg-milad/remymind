@@ -11,7 +11,6 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common"
-import * as admin from "firebase-admin"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
 import { CurrentUser } from "src/common/decorator/current-user.decorator"
 import { CreatereMinder } from "./dto/create-reminder.dto"
@@ -74,11 +73,11 @@ export class RemymindController {
   }
 
   @Post("/notif")
-  async sendnotif(@Headers("Authorization") fcmtoken, @Body() payload ,@CurrentUser() user) {
+  async sendnotif(@Headers("Authorization") fcmtoken, @Body() payload ) {
     console.log(fcmtoken);
     console.log(payload);
     try {
-      return await this.notify.sendNotif(fcmtoken,payload)
+      return await this.notify.sendNotification(fcmtoken,payload.title,payload.body)
       
     } catch (error) {
       console.log(error);
