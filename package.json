@@ -37,7 +37,6 @@
     "cookie-parser": "^1.4.6",
     "express-session": "^1.17.3",
     "firebase-admin": "^11.5.0",
-    "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.8.0",
