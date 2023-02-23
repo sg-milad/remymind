@@ -29,7 +29,8 @@ async function bootstrap() {
       store: new RedisStore({ client: redisClient }),
     })
   )
-  app.useGlobalPipes(new ValidationPipe({ transform: true }))
+  app.useGlobalPipes(new ValidationPipe({ transform: true }),)
+
   app.use(passport.initialize())
   app.use(passport.session())
   await app.listen(3001)
