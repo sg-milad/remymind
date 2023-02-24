@@ -11,14 +11,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService
   ) {
     super({
-      clientID: configService.get<string>("client_ID"),
-      clientSecret: configService.get<string>("client_Secret"),
-      callbackURL: "http://localhost:3001/api/auth/google/redirect",
+      clientID: configService.get<string>("google.client_id"),
+      clientSecret: configService.get<string>("google.client_secrt"),
+      callbackURL: configService.get<string>("google.call_back_url"),
       scope: ["profile", "email"],
     })
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
+    console.log(profile);
+    
     const user = await this.authService.validateUser({
       email: profile.emails[0].value,
       displayName: profile.displayName,

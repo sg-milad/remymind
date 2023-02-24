@@ -34,13 +34,13 @@ import firbaseConfig from "./config/firbase.config"
         port: configService.get<number>("database.port"),
         username: configService.get<string>("database.username"),
         password: configService.get<string>("database.password"),
-        database: "google_oauth2_app",
+        database:configService.get<string>("database.name"),
         synchronize: true,
         autoLoadEntities: true,
-        
       }),
       inject:[ConfigService]
     }),
+
     PassportModule.register({ session: true }),
     RemymindModule,
     CacheModule.register({
@@ -50,7 +50,6 @@ import firbaseConfig from "./config/firbase.config"
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "upload"),
       serveRoot: "/upload",
-      // renderPath:"/api"
     }),
   ],
   controllers: [],
