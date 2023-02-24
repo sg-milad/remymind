@@ -1,6 +1,5 @@
-import { Controller, Get, Req, UseGuards,  } from "@nestjs/common"
+import { Controller, Get, Req, UseGuards } from "@nestjs/common"
 import { Request } from "express"
-import { CurrentUser } from "src/common/decorator/current-user.decorator"
 import { GoogleAuthGuard } from "./utils/Guards"
 
 @Controller("auth")
@@ -10,6 +9,7 @@ export class AuthController {
   handleLogin() {
     return { msg: "Google Authentication" }
   }
+  
   // api/auth/google/redirect
   @Get("google/redirect")
   @UseGuards(GoogleAuthGuard)
@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @Get("status")
-  user(@Req() request: Request ,@CurrentUser() user ) {
+  user(@Req() request: Request) {
     if (request.user) {
       return { msg: "Authenticated" }
     } else {

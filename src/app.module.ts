@@ -8,7 +8,7 @@ import { PassportModule } from "@nestjs/passport"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { AuthModule } from "./auth/auth.module"
 import { RemymindModule } from "./remymind/remymind.module"
-import { ConfigModule } from "@nestjs/config"
+import { ConfigModule, ConfigService } from "@nestjs/config"
 import configuration from "./config/configuration"
 import { redisStore } from "cache-manager-redis-store"
 import { LoggerMiddleware } from "./middleware/logger.middleware"
@@ -26,15 +26,20 @@ import firbaseConfig from "./config/firbase.config"
       load: [configuration, firbaseConfig],
     }),
     AuthModule,
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "0.0.0.0",
-      port: 8080,
-      username: "postgres",
-      password: "1234",
-      database: "google_oauth2_app",
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports:[ConfigModule],
+      useFactory: async (configService:ConfigService) => ({
+        type: "postgres",
+        host: configService.get<string>("database.host"),
+        port: configService.get<number>("database.port"),
+        username: configService.get<string>("database.username"),
+        password: configService.get<string>("database.password"),
+        database: "google_oauth2_app",
+        synchronize: true,
+        autoLoadEntities: true,
+        
+      }),
+      inject:[ConfigService]
     }),
     PassportModule.register({ session: true }),
     RemymindModule,
