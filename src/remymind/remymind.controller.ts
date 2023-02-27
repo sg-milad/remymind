@@ -3,11 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common"
@@ -16,6 +16,7 @@ import { CurrentUser } from "src/common/decorator/current-user.decorator"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 import { RemymindService } from "./remymind.service"
 import { NotificationsService } from "src/notification/notification.service"
+import { Response } from "express"
 
 @Controller("remymind")
 export class RemymindController {
@@ -31,21 +32,32 @@ export class RemymindController {
       { name: "voice", maxCount: 1 },
     ])
   )
-  createreminder(
+  async createreminder(
     @CurrentUser() user,
     @Body() createreMinder: CreatereMinder,
     @UploadedFiles()
-    file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] }
+    file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] },
+    @Res() res: Response
   ) {
-    return this.remyMindService.createReminder(user, createreMinder, file)
+    return await this.remyMindService.createReminder(
+      user,
+      createreMinder,
+      file,
+      res
+    )
   }
 
-  @Get() getAllReminder(@CurrentUser() user) {
-    return this.remyMindService.getAllReminder(user)
+  @Get()
+  async getAllReminder(@CurrentUser() user, @Res() res: Response) {
+    return await this.remyMindService.getAllReminder(user, res)
   }
 
-  @Get(":id") getreminder(@CurrentUser() user, @Param("id", ParseIntPipe) id) {
-    return this.remyMindService.getReminder(user, id)
+  @Get(":id") async getreminder(
+    @CurrentUser() user,
+    @Param("id", ParseIntPipe) id,
+    @Res() res: Response
+  ) {
+    return await this.remyMindService.getReminder(user, id, res)
   }
 
   @Patch(":id")
@@ -55,33 +67,29 @@ export class RemymindController {
       { name: "voice", maxCount: 1 },
     ])
   )
-  updateReminder(
+  async updateReminder(
+    @Res() res: Response,
     @CurrentUser() user,
     @Param("id", ParseIntPipe) id,
     @Body() createreMinder: CreatereMinder,
     @UploadedFiles()
     file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] }
   ) {
-    return this.remyMindService.updateReminder(user, id, createreMinder, file)
+    return await this.remyMindService.updateReminder(
+      user,
+      id,
+      createreMinder,
+      file,
+      res
+    )
   }
 
-  @Delete(":id") deleteReminder(
+  @Delete(":id")
+  async deleteReminder(
     @CurrentUser() user,
-    @Param("id", ParseIntPipe) id
+    @Param("id", ParseIntPipe) id,
+    @Res() res: Response
   ) {
-    return this.remyMindService.deleteReminder(user, id)
-  }
-
-  @Post("/notif")
-  async sendnotif(@Headers("Authorization") fcmtoken, @Body() payload ) {
-    console.log(fcmtoken);
-    console.log(payload);
-    try {
-      return await this.notify.sendNotification(fcmtoken,payload.title,payload.body)
-      
-    } catch (error) {
-      console.log(error);
-      
-    }
+    return await this.remyMindService.deleteReminder(user, id, res)
   }
 }

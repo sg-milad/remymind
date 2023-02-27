@@ -1,8 +1,6 @@
 import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class CreatereMinder {
-  userId: string
-
   @IsString()
   title: string
 

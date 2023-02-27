@@ -9,7 +9,6 @@ export default registerAs<AppOptions, ConfigFactory<AppOptions>>(
       throw new Error("Firebase CERT  has been required.")
     }
 
-    return {
-    }
+    return {}
   }
 )

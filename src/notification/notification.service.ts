@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin"
 
 import { Inject, Injectable } from "@nestjs/common"
 import { ConfigType } from "@nestjs/config"
@@ -10,42 +10,23 @@ export class NotificationsService {
     @Inject(firbaseConfig.KEY)
     private readonly fbConfig: ConfigType<typeof firbaseConfig>
   ) {
-    // console.log(fbConfig);
-    try {
-      // firebase.initializeApp({
-
-      //   // databaseURL:"localhost:3000",
-      //   credential: firebase.credential.cert(
-      //   {
-          
-      //     },
-      //   ),
-      // },"notify")
-      admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: '',
-    clientEmail:"",
-    privateKey:
-  ""
-  }),
-});
-      
-    } 
-    catch (error) {
-      console.log(error);
-    }
-     
+      // admin.initializeApp({
+      //   credential: admin.credential.cert({
+      //     projectId: "",
+      //     clientEmail: "",
+      //     privateKey: "",
+      //   }),
+      // })
   }
 
   async sendNotification(token: string, title: string, body: string) {
     const message = {
       notification: {
         title,
-        body
+        body,
       },
-      token
-    };
-    return admin.messaging().send(message);
+      token,
+    }
+    return admin.messaging().send(message)
   }
-
 }

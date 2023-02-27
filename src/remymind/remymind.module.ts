@@ -9,7 +9,6 @@ import { RemymindService } from "./remymind.service"
 
 @Module({
   imports: [
-    // NotificationsService,
     ConfigModule,
     TypeOrmModule.forFeature([ReMyinder]),
     MulterModule.register({

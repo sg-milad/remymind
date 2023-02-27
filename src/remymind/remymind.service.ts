@@ -12,7 +12,7 @@ export class RemymindService {
   ) {}
   private readonly logger = new Logger(RemymindService.name)
 
-  async createReminder(userId, createreMinder: CreatereMinder, file) {
+  async createReminder(userId, createreMinder: CreatereMinder, file, res) {
     try {
       const newMinder = this.remymindRepository.create({
         description: createreMinder.description,
@@ -23,15 +23,17 @@ export class RemymindService {
         voice: file.voice ? file.voice[0].path : null,
         user: userId.id,
       })
+
       const saveNewRemind = await this.remymindRepository.save(newMinder)
       if (!newMinder) {
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          data: "reminder doesnt created ",
-          seccess: false,
-        }
+        throw new HttpException(
+          "reminder wasnt created",
+          HttpStatus.BAD_REQUEST
+        )
       }
-      return { status: HttpStatus.CREATED, data: saveNewRemind, success: true }
+      return res
+        .status(201)
+        .send({ data: saveNewRemind, stasuseCode: HttpStatus.CREATED })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -41,24 +43,14 @@ export class RemymindService {
     }
   }
 
-  async getAllReminder(userId) {
+  async getAllReminder(userId, res) {
     try {
-      // const getAllReminder = await this.remymindRepository.findBy({user:{id:userId.id}})
-
-      const getAllReminder = await this.remymindRepository.find({
+      const getAllReminde = await this.remymindRepository.find({
         where: {
           user: { id: userId.id },
         },
       })
-
-      if (getAllReminder.length === 0) {
-        return {
-          status: HttpStatus.NO_CONTENT,
-          data: "no content",
-          success: false,
-        }
-      }
-      return { status: HttpStatus.OK, data: getAllReminder, success: true }
+      return res.status(200).send({ statusCode: 200, data: getAllReminde })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -68,7 +60,7 @@ export class RemymindService {
     }
   }
 
-  async getReminder(userId, idReminder) {
+  async getReminder(userId, idReminder, res) {
     try {
       const getReminder = await this.remymindRepository.find({
         where: {
@@ -76,14 +68,8 @@ export class RemymindService {
           id: idReminder,
         },
       })
-      if (getReminder.length === 0) {
-        return {
-          status: HttpStatus.NO_CONTENT,
-          data: "not found ",
-          seccess: false,
-        }
-      }
-      return { status: HttpStatus.ACCEPTED, data: getReminder, success: true }
+
+      return res.status(200).send({ statusCode: 200, data: getReminder })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
@@ -97,10 +83,23 @@ export class RemymindService {
     userId,
     idReminder,
     createreMinder: CreatereMinder,
-    file
+    file,
+    res
   ) {
     try {
-      const updateReminder = await this.remymindRepository.update(
+      const findreminder = await this.remymindRepository.findOne({
+        where: {
+          user: { id: userId.id },
+          id: idReminder,
+        },
+      })
+
+      if (findreminder === null)
+        return res
+          .status(200)
+          .send({ data: "reminder wasnt found", statusCode: 200 });
+
+      await this.remymindRepository.update(
         {
           user: { id: userId.id },
           id: idReminder,
@@ -115,19 +114,12 @@ export class RemymindService {
         }
       )
 
-      if (updateReminder.affected === 0) {
-        return {
-          status: HttpStatus.NOT_FOUND,
-          data: "error",
-          seccess: false,
-        }
-      }
-      return {
-        status: HttpStatus.CREATED,
-        data: "updated sccussfuly",
-        seccess: true,
-      }
+      return res
+        .status(HttpStatus.OK)
+        .send({ data: "reminder was updated", statusCode: HttpStatus.OK })
     } catch (error) {
+      console.log(error)
+
       this.logger.error(error)
       throw new HttpException(
         "INTERNAL_SERVER_ERROR",
@@ -136,24 +128,31 @@ export class RemymindService {
     }
   }
 
-  async deleteReminder(userId, idReminder) {
+  async deleteReminder(userId, idReminder, res) {
     try {
-      const deleteReminder = await this.remymindRepository.delete({
+      const findreminder = await this.remymindRepository.findOne({
+        where: {
+          user: { id: userId.id },
+          id: idReminder,
+        },
+      })
+
+      if (findreminder === null) {
+        return res
+          .status(HttpStatus.ACCEPTED)
+          .send({
+            data: "reminder wasnt founded",
+            statusCode: HttpStatus.ACCEPTED,
+          })
+      }
+      await this.remymindRepository.delete({
         user: { id: userId.id },
         id: idReminder,
       })
-      if (deleteReminder.affected === 0) {
-        return {
-          status: HttpStatus.NOT_FOUND,
-          data: "not found",
-          seccess: false,
-        }
-      }
-      return {
-        status: HttpStatus.CREATED,
-        data: "delete sccessfuly",
-        seccess: true,
-      }
+
+      return res
+        .status(HttpStatus.ACCEPTED)
+        .send({ data: "reminder was deleted", statusCode: HttpStatus.ACCEPTED })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(
