@@ -1,38 +1,37 @@
-FROM node:18-alpine As development
+# Building layer
+FROM node:16-alpine as development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY --chown=node:node package*.json ./
+# Copy configuration files
+COPY tsconfig*.json ./
+COPY package*.json ./
 
+# Install dependencies from package-lock.json, see https://docs.npmjs.com/cli/v7/commands/npm-ci
 RUN npm ci
 
-COPY --chown=node:node . .
+# Copy application sources (.ts, .tsx, js)
+COPY src/ src/
 
-USER node
-
-FROM node:18-alpine As build
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
-COPY --chown=node:node . .
-
+# Build application (produces dist/ folder)
 RUN npm run build
 
-ENV NODE_ENV production
+# Runtime (production) layer
+FROM node:16-alpine as production
 
-RUN npm ci --only=production && npm cache clean --force
+WORKDIR /app
 
-USER node
+# Copy dependencies files
+COPY package*.json ./
 
-FROM node:18-alpine As production
+# Install runtime dependecies (without dev/test dependecies)
+RUN npm ci --production
 
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+# Copy production build
+COPY --from=development /app/dist/ ./dist/
 
-# Start the server using the production build
+# Expose application port
+EXPOSE 3001
+
+# Start application
 CMD [ "node", "dist/main.js" ]
