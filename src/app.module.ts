@@ -27,18 +27,18 @@ import firbaseConfig from "./config/firbase.config"
     }),
     AuthModule,
     TypeOrmModule.forRootAsync({
-      imports:[ConfigModule],
-      useFactory: async (configService:ConfigService) => ({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
         type: "postgres",
         host: configService.get<string>("database.host"),
         port: configService.get<number>("database.port"),
         username: configService.get<string>("database.username"),
         password: configService.get<string>("database.password"),
-        database:configService.get<string>("database.name"),
+        database: configService.get<string>("database.name"),
         synchronize: true,
         autoLoadEntities: true,
       }),
-      inject:[ConfigService]
+      inject: [ConfigService],
     }),
 
     PassportModule.register({ session: true }),
