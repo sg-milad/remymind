@@ -12,18 +12,14 @@ import {
   UseInterceptors,
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
-import { CurrentUser } from "src/common/decorator/current-user.decorator"
+import { CurrentUser } from "../common/decorator/current-user.decorator"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 import { RemymindService } from "./remymind.service"
-import { NotificationsService } from "src/notification/notification.service"
 import { Response } from "express"
 
 @Controller("remymind")
 export class RemymindController {
-  constructor(
-    private readonly remyMindService: RemymindService,
-    private readonly notify: NotificationsService
-  ) {}
+  constructor(private readonly remyMindService: RemymindService) {}
 
   @Post()
   @UseInterceptors(

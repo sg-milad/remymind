@@ -10,13 +10,13 @@ export class NotificationsService {
     @Inject(firbaseConfig.KEY)
     private readonly fbConfig: ConfigType<typeof firbaseConfig>
   ) {
-      // admin.initializeApp({
-      //   credential: admin.credential.cert({
-      //     projectId: "",
-      //     clientEmail: "",
-      //     privateKey: "",
-      //   }),
-      // })
+    // admin.initializeApp({
+    //   credential: admin.credential.cert({
+    //     projectId: "",
+    //     clientEmail: "",
+    //     privateKey: "",
+    //   }),
+    // })
   }
 
   async sendNotification(token: string, title: string, body: string) {

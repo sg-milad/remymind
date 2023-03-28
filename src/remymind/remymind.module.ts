@@ -2,8 +2,7 @@ import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { MulterModule } from "@nestjs/platform-express"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { NotificationsService } from "src/notification/notification.service"
-import { ReMyinder } from "src/typeorm/entities/Remymind"
+import { ReMyinder } from "../typeorm/entities/Remymind"
 import { RemymindController } from "./remymind.controller"
 import { RemymindService } from "./remymind.service"
 
@@ -18,7 +17,6 @@ import { RemymindService } from "./remymind.service"
   ],
   controllers: [RemymindController],
   providers: [
-    NotificationsService,
     RemymindService,
     {
       provide: "Remymind_Service",

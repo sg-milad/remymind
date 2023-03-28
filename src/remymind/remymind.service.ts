@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { ReMyinder } from "src/typeorm/entities/Remymind"
+import { ReMyinder } from "../typeorm/entities/Remymind"
 import { Repository } from "typeorm"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 
@@ -97,7 +97,7 @@ export class RemymindService {
       if (findreminder === null)
         return res
           .status(200)
-          .send({ data: "reminder wasnt found", statusCode: 200 });
+          .send({ data: "reminder wasnt found", statusCode: 200 })
 
       await this.remymindRepository.update(
         {
@@ -138,12 +138,10 @@ export class RemymindService {
       })
 
       if (findreminder === null) {
-        return res
-          .status(HttpStatus.ACCEPTED)
-          .send({
-            data: "reminder wasnt founded",
-            statusCode: HttpStatus.ACCEPTED,
-          })
+        return res.status(HttpStatus.ACCEPTED).send({
+          data: "reminder wasnt founded",
+          statusCode: HttpStatus.ACCEPTED,
+        })
       }
       await this.remymindRepository.delete({
         user: { id: userId.id },
