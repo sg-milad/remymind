@@ -12,71 +12,73 @@ export class RemymindService {
   ) {}
   private readonly logger = new Logger(RemymindService.name)
 
-  async createReminder(userId, createreMinder: CreatereMinder, file, res) {
+  async createReminder(userId, createreMinder:CreatereMinder, file, res) {
     try {
+      const { description, favorite, remindme, title } = createreMinder;
+      const { img, voice } = file;
+  
       const newMinder = this.remymindRepository.create({
-        description: createreMinder.description,
-        favorite: createreMinder.favorite,
-        img: file.img ? file.img[0].path : null,
-        remindme: createreMinder.remindme,
-        title: createreMinder.title,
-        voice: file.voice ? file.voice[0].path : null,
+        description,
+        favorite,
+        img: img ? img[0].path : null,
+        remindme,
+        title,
+        voice: voice ? voice[0].path : null,
         user: userId.id,
-      })
-
-      const saveNewRemind = await this.remymindRepository.save(newMinder)
-      if (!newMinder) {
-        throw new HttpException(
-          "reminder wasnt created",
-          HttpStatus.BAD_REQUEST
-        )
-      }
+      });
+  
+      const saveNewRemind = await this.remymindRepository.save(newMinder);
+  
       return res
-        .status(201)
-        .send({ data: saveNewRemind, stasuseCode: HttpStatus.CREATED })
+        .status(HttpStatus.CREATED)
+        .send({ data: saveNewRemind, stasuseCode: HttpStatus.CREATED });
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error);
       throw new HttpException(
-        "INTERNAL_SERVER_ERROR",
+        "Failed to create reminder",
         HttpStatus.INTERNAL_SERVER_ERROR
-      )
+      );
     }
   }
 
   async getAllReminder(userId, res) {
     try {
-      const getAllReminde = await this.remymindRepository.find({
+      const getAllReminders = await this.remymindRepository.find({
         where: {
           user: { id: userId.id },
         },
       })
-      return res.status(200).send({ statusCode: 200, data: getAllReminde })
+      return res.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, data: getAllReminders });
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error);
       throw new HttpException(
-        "INTERNAL_SERVER_ERROR",
-        HttpStatus.INTERNAL_SERVER_ERROR
-      )
+        'Failed to get reminders',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async getReminder(userId, idReminder, res) {
     try {
-      const getReminder = await this.remymindRepository.find({
+      const reminder = await this.remymindRepository.findOne({
         where: {
           user: { id: userId.id },
           id: idReminder,
         },
-      })
+      });
 
-      return res.status(200).send({ statusCode: 200, data: getReminder })
+      if (!reminder) {
+        throw new HttpException('Reminder not found', HttpStatus.NOT_FOUND);
+      }
+
+      return res.status(200).send({ statusCode: 200, data: reminder })
     } catch (error) {
-      this.logger.error(error)
-      throw new HttpException(
-        "INTERNAL_SERVER_ERROR",
-        HttpStatus.INTERNAL_SERVER_ERROR
-      )
-    }
+       this.logger.error(error);
+    throw new HttpException(
+      'Failed to get reminder',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
   }
 
   async updateReminder(
@@ -94,7 +96,7 @@ export class RemymindService {
         },
       })
 
-      if (findreminder === null)
+      if (!findreminder)
         return res
           .status(200)
           .send({ data: "reminder wasnt found", statusCode: 200 })
@@ -118,14 +120,12 @@ export class RemymindService {
         .status(HttpStatus.OK)
         .send({ data: "reminder was updated", statusCode: HttpStatus.OK })
     } catch (error) {
-      console.log(error)
-
-      this.logger.error(error)
-      throw new HttpException(
-        "INTERNAL_SERVER_ERROR",
-        HttpStatus.INTERNAL_SERVER_ERROR
-      )
-    }
+      this.logger.error(error);
+    throw new HttpException(
+      'Failed to update reminder',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
   }
 
   async deleteReminder(userId, idReminder, res) {

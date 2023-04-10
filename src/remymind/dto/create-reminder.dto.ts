@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator"
+import {  IsNumber, IsOptional, IsString } from "class-validator"
 
 export class CreatereMinder {
   @IsString()
@@ -15,7 +15,6 @@ export class CreatereMinder {
   @IsOptional()
   voice: string
 
-  @IsBoolean()
   @IsOptional()
   favorite: boolean
 
