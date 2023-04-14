@@ -12,8 +12,9 @@ export class RemymindService {
   ) {}
   private readonly logger = new Logger(RemymindService.name)
 
-  async createReminder(userId, createreMinder:CreatereMinder, file, res) {
+  async createReminder(userId, createreMinder:CreatereMinder, file) {
     try {
+      
       const { description, favorite, remindme, title } = createreMinder;
       const { img, voice } = file;
   
@@ -29,9 +30,7 @@ export class RemymindService {
   
       const saveNewRemind = await this.remymindRepository.save(newMinder);
   
-      return res
-        .status(HttpStatus.CREATED)
-        .send({ data: saveNewRemind, stasuseCode: HttpStatus.CREATED });
+      return saveNewRemind
     } catch (error) {
       this.logger.error(error);
       throw new HttpException(
@@ -41,14 +40,14 @@ export class RemymindService {
     }
   }
 
-  async getAllReminder(userId, res) {
+  async getAllReminder(userId) {
     try {
       const getAllReminders = await this.remymindRepository.find({
         where: {
           user: { id: userId.id },
         },
       })
-      return res.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, data: getAllReminders });
+      return getAllReminders
     } catch (error) {
       this.logger.error(error);
       throw new HttpException(
@@ -58,20 +57,16 @@ export class RemymindService {
     }
   }
 
-  async getReminder(userId, idReminder, res) {
+  async getReminder(userId, idReminder) {
     try {
-      const reminder = await this.remymindRepository.findOne({
+      const getReminder = await this.remymindRepository.findOne({
         where: {
           user: { id: userId.id },
           id: idReminder,
         },
       });
 
-      if (!reminder) {
-        throw new HttpException('Reminder not found', HttpStatus.NOT_FOUND);
-      }
-
-      return res.status(200).send({ statusCode: 200, data: reminder })
+      return getReminder
     } catch (error) {
        this.logger.error(error);
     throw new HttpException(
@@ -86,22 +81,21 @@ export class RemymindService {
     idReminder,
     createreMinder: CreatereMinder,
     file,
-    res
   ) {
     try {
-      const findreminder = await this.remymindRepository.findOne({
-        where: {
-          user: { id: userId.id },
-          id: idReminder,
-        },
-      })
+      // const findreminder = await this.remymindRepository.findOne({
+      //   where: {
+      //     user: { id: userId.id },
+      //     id: idReminder,
+      //   },
+      // })
 
-      if (!findreminder)
-        return res
-          .status(200)
-          .send({ data: "reminder wasnt found", statusCode: 200 })
+      // if (!findreminder)
+      //   return res
+      //     .status(200)
+      //     .send({ data: "reminder wasnt found", statusCode: 200 })
 
-      await this.remymindRepository.update(
+      const updateReminder= await this.remymindRepository.update(
         {
           user: { id: userId.id },
           id: idReminder,
@@ -116,9 +110,10 @@ export class RemymindService {
         }
       )
 
-      return res
-        .status(HttpStatus.OK)
-        .send({ data: "reminder was updated", statusCode: HttpStatus.OK })
+      // return res
+      //   .status(HttpStatus.OK)
+      //   .send({ data: "reminder was updated", statusCode: HttpStatus.OK })
+        return updateReminder
     } catch (error) {
       this.logger.error(error);
     throw new HttpException(
@@ -128,7 +123,7 @@ export class RemymindService {
   }
   }
 
-  async deleteReminder(userId, idReminder, res) {
+  async deleteReminder(userId, idReminder) {
     try {
       const findreminder = await this.remymindRepository.findOne({
         where: {
@@ -137,20 +132,12 @@ export class RemymindService {
         },
       })
 
-      if (findreminder === null) {
-        return res.status(HttpStatus.ACCEPTED).send({
-          data: "reminder wasnt founded",
-          statusCode: HttpStatus.ACCEPTED,
-        })
-      }
       await this.remymindRepository.delete({
         user: { id: userId.id },
         id: idReminder,
       })
 
-      return res
-        .status(HttpStatus.ACCEPTED)
-        .send({ data: "reminder was deleted", statusCode: HttpStatus.ACCEPTED })
+      return findreminder
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(

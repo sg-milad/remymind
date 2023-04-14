@@ -10,6 +10,7 @@ import {
   Res,
   UploadedFiles,
   UseInterceptors,
+  HttpStatus
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
 import { CurrentUser } from "../common/decorator/current-user.decorator"
@@ -35,17 +36,25 @@ export class RemymindController {
     file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] },
     @Res() res: Response
   ) {
-    return await this.remyMindService.createReminder(
+    const createReminder = await this.remyMindService.createReminder(
       user,
       createreMinder,
       file,
-      res
+      
     )
+      return res.send({statusCode:HttpStatus.CREATED ,data:createReminder})
   }
 
   @Get()
   async getAllReminder(@CurrentUser() user, @Res() res: Response) {
-    return await this.remyMindService.getAllReminder(user, res)
+    const getAll = await this.remyMindService.getAllReminder(user)
+    
+      if (getAll.length ===0){
+       return  res.send({
+        statusCode:HttpStatus.NO_CONTENT,data:null
+        })
+      }  
+    return res.send(getAll)
   }
 
   @Get(":id") async getreminder(
@@ -53,7 +62,9 @@ export class RemymindController {
     @Param("id", ParseIntPipe) id,
     @Res() res: Response
   ) {
-    return await this.remyMindService.getReminder(user, id, res)
+    const getReminder = await this.remyMindService.getReminder(user, id)
+    
+    res.send({statusCode:HttpStatus.OK,data:getReminder})
   }
 
   @Patch(":id")
@@ -71,13 +82,14 @@ export class RemymindController {
     @UploadedFiles()
     file: { img?: Express.Multer.File[]; voice?: Express.Multer.File[] }
   ) {
-    return await this.remyMindService.updateReminder(
+    const updateReminder = await this.remyMindService.updateReminder(
       user,
       id,
       createreMinder,
       file,
-      res
     )
+    if(updateReminder.affected === 0) return res.send({statusCode:HttpStatus.OK,data:"reminder wasn't found"})
+    res.send({statusCode:HttpStatus.ACCEPTED , data:"reminder was updated"})
   }
 
   @Delete(":id")
@@ -86,6 +98,17 @@ export class RemymindController {
     @Param("id", ParseIntPipe) id,
     @Res() res: Response
   ) {
-    return await this.remyMindService.deleteReminder(user, id, res)
+    const deleteReminder= await this.remyMindService.deleteReminder(user, id)
+
+  if (!deleteReminder) {
+        return res.status(HttpStatus.ACCEPTED).send({
+          data: "reminder wasnt founded",
+          statusCode: HttpStatus.NO_CONTENT,
+        })
+      }
+      return res.send({
+        data:"reminder deleted seccussfuly",
+        statusCode:HttpStatus.ACCEPTED
+      })
   }
 }
