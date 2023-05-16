@@ -1,5 +1,5 @@
 # Building layer
-FROM node:16-alpine as development
+FROM node:18-alpine as development
 
 WORKDIR /app
 
