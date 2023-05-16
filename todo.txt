@@ -3,6 +3,7 @@ learn about error handeling in nest
 learn how to send notification and remind user
 learn loging in nest
 refactor 
+//add user module
 //save session in redis
 // validate qurey params 
 // daecretor for get user

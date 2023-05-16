@@ -13,7 +13,7 @@ import {
   HttpStatus
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
-import { CurrentUser } from "../common/decorator/current-user.decorator"
+import { CurrentUser } from "../../common/decorator/current-user.decorator"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 import { RemymindService } from "./remymind.service"
 import { Response } from "express"

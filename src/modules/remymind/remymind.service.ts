@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { ReMyinder } from "../typeorm/entities/Remymind"
+import { ReMyinder } from "../../typeorm/entities/Remymind"
 import { Repository } from "typeorm"
 import { CreatereMinder } from "./dto/create-reminder.dto"
 

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { MulterModule } from "@nestjs/platform-express"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { ReMyinder } from "../typeorm/entities/Remymind"
+import { ReMyinder } from "../../typeorm/entities/Remymind"
 import { RemymindController } from "./remymind.controller"
 import { RemymindService } from "./remymind.service"
 
