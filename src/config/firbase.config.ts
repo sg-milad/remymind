@@ -6,7 +6,7 @@ export default registerAs<AppOptions, ConfigFactory<AppOptions>>(
   "firebase",
   async () => {
     if (!process.env.FIREBASE_CER) {
-      // throw new Error("Firebase CERT  has been required.")
+      throw new Error("Firebase CERT  has been required.")
     }
 
     return {}
