@@ -7,7 +7,7 @@ import { UserService } from "../../user/user.service"
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @Inject("AUTH_SERVICE") private readonly authService: UserService,
+    @Inject("USER_SERVICE") private readonly userService: UserService,
     private configService: ConfigService
   ) {
     super({
@@ -21,7 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     console.log(profile)
 
-    const user = await this.authService.validateUser({
+    const user = await this.userService.validateUser({
       email: profile.emails[0].value,
       displayName: profile.displayName,
     })
