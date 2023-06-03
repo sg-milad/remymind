@@ -14,6 +14,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ["error", "warn", "log"],
   })
+  
   app.setGlobalPrefix("api")
   app.use(cookieParser())
 

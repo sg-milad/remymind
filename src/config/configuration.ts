@@ -4,9 +4,9 @@ export default () => ({
     type: process.env.TYPE,
     host: process.env.DATABASE_HOST,
     port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-    username: process.env.database_username,
-    password: process.env.database_password,
-    name: process.env.database_name,
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    name: process.env.POSTGRES_DB,
   },
   google: {
     client_secrt: process.env.client_Secret,

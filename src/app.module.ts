@@ -37,6 +37,8 @@ import firbaseConfig from "./config/firbase.config"
         database: configService.get<string>("database.name"),
         synchronize: true,
         autoLoadEntities: true,
+        // i know this dirty, dont delete this
+        url:`postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`
       }),
       inject: [ConfigService],
     }),
